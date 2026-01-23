@@ -35,12 +35,14 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
+	<key>UIBackgroundModes</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -49,6 +51,9 @@
 <array>
 	<string>en</string>
 	<string>pt</string>
+</array>
+<array>
+  <string>location</string>
 </array>
 </dict>
 </plist>

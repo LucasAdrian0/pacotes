@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pacotes/pages/auto_size_text.dart';
 import 'package:pacotes/pages/battery_page/battery_page.dart';
+import 'package:pacotes/pages/connectivity_plus/connectivy_plus_page.dart';
+import 'package:pacotes/pages/geolocator/geolocator_page.dart';
 import 'package:pacotes/pages/percent_indicator/percent_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,47 +22,6 @@ class CustonDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(10),
-                ),
-                context: context,
-                builder: (BuildContext bc) {
-                  return Wrap(
-                    children: [
-                      ListTile(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        title: Text("Camera"),
-                        leading: Icon(Icons.camera_alt),
-                      ),
-                      ListTile(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        title: Text("Galeria"),
-                        leading: Icon(Icons.photo),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: Colors.orange),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Image.network(
-                  "http://hermes.digitalinnovation.one/assets/diome/logo.png",
-                ),
-              ),
-              accountName: Text("Lucas Adriano"),
-              accountEmail: Text("email@email.com"),
-            ),
-          ),
           //Abrir dio
           InkWell(
             child: Container(
@@ -262,6 +227,8 @@ class CustonDrawer extends StatelessWidget {
               );
             },
           ),
+          const Divider(),
+          const SizedBox(height: 10),
           //Path_provider compartilhamento de dados (File)
           InkWell(
             child: Container(
@@ -279,11 +246,124 @@ class CustonDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            onTap: () {
-              
+            onTap: () async {
+              var directory = await path_provider.getTemporaryDirectory();
+              print(directory.path);
+              directory = await path_provider.getApplicationSupportDirectory();
+              print(directory.path);
+              directory = await path_provider
+                  .getApplicationDocumentsDirectory();
+              print(directory.path);
             },
           ),
-        ],
+          const Divider(),
+          const SizedBox(height: 10),
+          //Path_provider Informações de Pacote
+          InkWell(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.appStoreIos,
+                    color: Colors.blue,
+                    size: 24,
+                  ),
+                  SizedBox(width: 5),
+                  Text("Informações pacote"),
+                ],
+              ),
+            ),
+            onTap: () async {
+              PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+              String appName = packageInfo.appName;
+              String packageName = packageInfo.packageName;
+              String version = packageInfo.version;
+              String buildNumber = packageInfo.buildNumber;
+              print(appName);
+              print(packageName);
+              print(version);
+              print(buildNumber);
+            },
+          ),
+          const Divider(),
+          const SizedBox(height: 10),
+          //Path_provider compartilhamento Informações de Dispositivos
+          InkWell(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  FaIcon(FontAwesomeIcons.mobile, color: Colors.blue, size: 24),
+                  SizedBox(width: 5),
+                  Text("Informações Dispositivos"),
+                ],
+              ),
+            ),
+            onTap: () async {
+              DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+              if (Platform.isAndroid) {
+                AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+                print('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
+              } else if (Platform.isIOS) {
+                IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+                print(
+                  'Running on ${iosInfo.utsname.machine}',
+                ); // e.g. "iPod7,1"
+              } else {
+                WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
+                print('Running on ${webBrowserInfo.userAgent}');
+              }
+            },
+          ),
+          const Divider(),
+          const SizedBox(height: 10),
+          //Connectivy
+          InkWell(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  FaIcon(FontAwesomeIcons.wifi, color: Colors.blue, size: 24),
+                  SizedBox(width: 5),
+                  Text("Connectivy"),
+                ],
+              ),
+            ),
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ConnectivyPlusPage()),
+              );
+            },
+          ),
+          const Divider(),
+          const SizedBox(height: 10),
+          //GPS
+          InkWell(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  FaIcon(FontAwesomeIcons.mapPin, color: Colors.blue, size: 24),
+                  SizedBox(width: 5),
+                  Text("GPS"),
+                ],
+              ),
+            ),
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => GeolocatorPage()),
+              );
+            },
+          ),
+        ].reversed.toList(),
       ),
     );
   }
